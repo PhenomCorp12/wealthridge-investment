@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -9,9 +9,12 @@ export const metadata: Metadata = {
   description: 'Professional investment banking platform with intelligent portfolio management, secure transactions, and competitive returns.',
   keywords: ['investment', 'banking', 'portfolio', 'stocks', 'bonds', 'wealth management'],
   authors: [{ name: 'WealthBridge' }],
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#3b82f6',
+}
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#3b82f6',
 }
 
 export default function RootLayout({
