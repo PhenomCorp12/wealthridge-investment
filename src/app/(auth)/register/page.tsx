@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { 
-  Lock, 
-  Mail, 
-  Eye, 
-  EyeOff, 
-  Building2, 
+import {
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  Building2,
   ArrowRight,
   AlertCircle,
   CheckCircle2,
@@ -21,7 +21,7 @@ import {
 
 export default function RegisterPage() {
   const router = useRouter()
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -104,13 +104,13 @@ export default function RegisterPage() {
       setError('User already registered with this email')
     } else {
       setSuccess('Account created successfully! Please check your email for verification.')
-      
+
       // Auto-login after successful registration (optional)
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
       })
-      
+
       if (!signInError) {
         setTimeout(() => {
           router.push('/(app)')
@@ -129,14 +129,14 @@ export default function RegisterPage() {
           <Building2 className="h-10 w-10 text-white" />
           <span className="text-2xl font-bold text-white">CapitalFlow</span>
         </div>
-        
+
         <div className="space-y-8">
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight mb-4">
               Join the Premier<br />Investment Platform
             </h1>
             <p className="text-indigo-100 text-lg">
-              Access institutional-grade tools for deal management, financial analysis, 
+              Access institutional-grade tools for deal management, financial analysis,
               and transaction execution.
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                 <p className="text-indigo-200 text-sm">SOC 2 Type II certified</p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <div className="bg-white/20 p-2 rounded-lg">
                 <Briefcase className="h-6 w-6 text-white" />
@@ -190,26 +190,28 @@ export default function RegisterPage() {
           <form onSubmit={handleRegister} className="space-y-6">
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center">
                     <User className="h-4 w-4 mr-2" />
                     First Name
                   </div>
                 </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="John"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
-                />
-                <User className="absolute left-3 top-11 h-5 w-5 text-gray-400" />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+                  />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                </div>
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Last Name
                 </label>
@@ -226,42 +228,46 @@ export default function RegisterPage() {
             </div>
 
             {/* Company Field */}
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <div className="flex items-center">
                   <Briefcase className="h-4 w-4 mr-2" />
                   Company (Optional)
                 </div>
               </label>
-              <input
-                type="text"
-                name="company"
-                placeholder="Investment Bank LLC"
-                value={formData.company}
-                onChange={handleChange}
-                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
-              />
-              <Briefcase className="absolute left-3 top-11 h-5 w-5 text-gray-400" />
+              <div className="relative">
+                <input
+                  type="text"
+                  name="company"
+                  placeholder="Investment Bank LLC"
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+                />
+                <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              </div>
             </div>
 
             {/* Email Field */}
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <div className="flex items-center">
                   <Mail className="h-4 w-4 mr-2" />
                   Work Email
                 </div>
               </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="john.doe@company.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
-              />
-              <Mail className="absolute left-3 top-11 h-5 w-5 text-gray-400" />
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="john.doe@company.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+                />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              </div>
             </div>
 
             {/* Password Field */}
@@ -301,11 +307,10 @@ export default function RegisterPage() {
                 <div className="mt-3 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Password strength:</span>
-                    <span className={`font-medium ${
-                      passwordStrength < 2 ? 'text-red-600' :
+                    <span className={`font-medium ${passwordStrength < 2 ? 'text-red-600' :
                       passwordStrength < 3 ? 'text-orange-600' :
-                      passwordStrength < 4 ? 'text-blue-600' : 'text-green-600'
-                    }`}>
+                        passwordStrength < 4 ? 'text-blue-600' : 'text-green-600'
+                      }`}>
                       {strengthLabels[passwordStrength]}
                     </span>
                   </div>
@@ -313,11 +318,10 @@ export default function RegisterPage() {
                     {[0, 1, 2, 3, 4].map((index) => (
                       <div
                         key={index}
-                        className={`h-1 flex-1 rounded-full ${
-                          index <= passwordStrength 
-                            ? strengthColors[passwordStrength] 
-                            : 'bg-gray-200'
-                        }`}
+                        className={`h-1 flex-1 rounded-full ${index <= passwordStrength
+                          ? strengthColors[passwordStrength]
+                          : 'bg-gray-200'
+                          }`}
                       />
                     ))}
                   </div>
@@ -438,8 +442,8 @@ export default function RegisterPage() {
           <div className="text-center pt-6 border-t border-gray-200">
             <p className="text-gray-600">
               Already have an account?{' '}
-              <Link 
-                href="/login" 
+              <Link
+                href="/login"
                 className="font-semibold text-indigo-600 hover:text-indigo-500 hover:underline transition-colors inline-flex items-center"
               >
                 Sign in here

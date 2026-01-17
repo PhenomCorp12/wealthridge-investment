@@ -1,4 +1,4 @@
-// components/dashboard/Sidebar.tsx
+// components/dashboard/Sidebar.tsx (partial update)
 'use client'
 
 import {
@@ -20,8 +20,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 const navItems = [
@@ -33,9 +32,14 @@ const navItems = [
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
-export default function DashboardSidebar({ user }: { user: any }) {
+export default function DashboardSidebar({
+  user,
+  openLogoutModal
+}: {
+  user: any,
+  openLogoutModal: () => void
+}) {
   const pathname = usePathname()
-  const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
 
@@ -52,13 +56,6 @@ export default function DashboardSidebar({ user }: { user: any }) {
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
   }, [])
-
-  const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
 
   // Mock user data
   const userData = {
@@ -86,7 +83,6 @@ export default function DashboardSidebar({ user }: { user: any }) {
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
-
 
       {/* Sidebar Container */}
       <div className={`
@@ -155,8 +151,8 @@ export default function DashboardSidebar({ user }: { user: any }) {
                 key={item.name}
                 href={item.href}
                 className={`flex items-center px-3 py-3 rounded-lg transition-all group ${isActive
-                    ? 'bg-white/20 text-white shadow-lg'
-                    : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                  ? 'bg-white/20 text-white shadow-lg'
+                  : 'text-blue-100 hover:bg-white/10 hover:text-white'
                   }`}
               >
                 <div className={`relative ${isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'}`}>
@@ -226,13 +222,13 @@ export default function DashboardSidebar({ user }: { user: any }) {
             </div>
 
             <button
-              onClick={handleLogout}
-              className="flex items-center text-sm text-blue-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
-              title="Logout"
+              onClick={openLogoutModal}
+              className="flex items-center text-sm text-blue-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors group"
             >
-              <LogOut className="h-4 w-4 mr-1" />
+              <LogOut className="h-4 w-4 mr-1 group-hover:rotate-180 transition-transform duration-300" />
               <span className="hidden sm:inline">Logout</span>
             </button>
+
           </div>
         </div>
       </div>

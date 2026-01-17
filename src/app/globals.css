@@ -230,3 +230,23 @@ body {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
   background-color: white !important;
 }
+
+/* If using Tailwind, add to your globals.css or tailwind.config.js */
+@keyframes zoom-in {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+
+.zoom-in {
+  animation-name: zoom-in;
+}
