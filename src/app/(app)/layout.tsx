@@ -1,5 +1,6 @@
 // /app/(app)/layout.tsx (Server Component)
 import { redirect } from 'next/navigation'
+import { DashboardProvider } from '@/components/providers/DashboardProvider'
 import DashboardClientWrapper from './DashboardClientWrapper'
 import { createClient } from '@/lib/supabase/server'
 

@@ -1,4 +1,4 @@
-// components/dashboard/Sidebar.tsx (partial update)
+// components/dashboard/Sidebar.tsx
 'use client'
 
 import {
@@ -22,6 +22,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useDashboard } from '@/components/providers/DashboardProvider'
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -42,6 +43,7 @@ export default function DashboardSidebar({
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const { data, loading } = useDashboard()
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -57,13 +59,27 @@ export default function DashboardSidebar({
     return () => window.removeEventListener('keydown', handleEscape)
   }, [])
 
-  // Mock user data
+  // Calculate available balance: deposits - withdrawals
+  const calculateAvailableBalance = () => {
+    if (loading || !data) return 0
+    
+    const totalDeposits = data.stats.totalDeposits
+    const totalWithdrawals = data.stats.totalWithdrawals
+    const activeInvestment = data.stats.activeInvestment
+    
+    // Available balance = total deposits - total withdrawals - active investments
+    return totalDeposits - totalWithdrawals - activeInvestment
+  }
+
+  const availableBalance = calculateAvailableBalance()
+  
+  // User data
   const userData = {
-    name: user?.user_metadata?.full_name || 'Investor',
+    name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Investor',
     email: user?.email,
     plan: 'Growth',
-    balance: 25430.50,
-    avatar: user?.user_metadata?.avatar_url || null
+    avatar: user?.user_metadata?.avatar_url || null,
+    balance: availableBalance
   }
 
   return (
@@ -172,26 +188,78 @@ export default function DashboardSidebar({
         {/* Balance & Quick Actions */}
         <div className="p-4 border-t border-blue-800">
           <div className="mb-4 bg-blue-800/30 backdrop-blur-sm rounded-xl p-4 border border-blue-700/50">
-            <p className="text-sm text-blue-300 mb-1">Available Balance</p>
-            <p className="text-2xl font-bold text-white">
-              ${userData.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </p>
-            <div className="grid grid-cols-2 gap-2 mt-3">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-sm text-blue-300">Available Balance</p>
+              {loading && (
+                <div className="h-2 w-2 animate-pulse rounded-full bg-blue-400"></div>
+              )}
+            </div>
+            
+            {loading ? (
+              <div className="h-8 bg-blue-700/50 rounded animate-pulse mb-3"></div>
+            ) : (
+              <>
+                <p className="text-2xl font-bold text-white">
+                  ${availableBalance.toLocaleString('en-US', { 
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2 
+                  })}
+                </p>
+                
+                {/* Balance Breakdown Tooltip */}
+                <div className="mt-2 text-xs text-blue-300 space-y-0.5">
+                  <div className="flex justify-between">
+                    <span>Deposits:</span>
+                    <span>${data?.stats.totalDeposits.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Withdrawals:</span>
+                    <span>${data?.stats.totalWithdrawals.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Invested:</span>
+                    <span>${data?.stats.activeInvestment.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                </div>
+              </>
+            )}
+            
+            <div className="grid grid-cols-2 gap-2 mt-4">
               <Link
                 href="/dashboard/deposit"
-                className="bg-linear-to-r from-blue-500 to-blue-600 text-white text-sm font-medium py-2 px-3 rounded-lg text-center hover:from-blue-600 hover:to-blue-700 transition-all shadow-md"
+                className="bg-linear-to-r from-blue-500 to-blue-600 text-white text-sm font-medium py-2 px-3 rounded-lg text-center hover:from-blue-600 hover:to-blue-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Deposit
               </Link>
               <Link
                 href="/dashboard/withdrawal"
-                className="bg-white/10 backdrop-blur-sm text-white text-sm font-medium py-2 px-3 rounded-lg text-center hover:bg-white/20 transition-all border border-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
+                className={`bg-white/10 backdrop-blur-sm text-white text-sm font-medium py-2 px-3 rounded-lg text-center transition-all border border-white/20 ${
+                  availableBalance <= 0 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:bg-white/20'
+                }`}
+                onClick={(e) => {
+                  if (availableBalance <= 0) {
+                    e.preventDefault()
+                  } else {
+                    setIsMobileMenuOpen(false)
+                  }
+                }}
+                title={availableBalance <= 0 ? "Insufficient balance" : "Withdraw funds"}
               >
                 Withdraw
               </Link>
             </div>
+            
+            {/* Balance Warning */}
+            {availableBalance < 100 && availableBalance > 0 && (
+              <div className="mt-2 p-2 bg-yellow-500/20 rounded border border-yellow-500/30">
+                <p className="text-xs text-yellow-300 text-center">
+                  Low balance
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Bottom Actions */}
@@ -216,7 +284,9 @@ export default function DashboardSidebar({
               {/* Notifications Dropdown */}
               {isNotificationsOpen && (
                 <div className="absolute bottom-full right-0 mb-2 w-64 bg-blue-800/90 backdrop-blur-sm rounded-lg shadow-xl border border-blue-700/50 p-2">
-                  <div className="text-xs text-blue-300 px-2 py-1">No new notifications</div>
+                  <div className="text-xs text-blue-300 px-2 py-1">
+                    {loading ? 'Loading...' : 'No new notifications'}
+                  </div>
                 </div>
               )}
             </div>
