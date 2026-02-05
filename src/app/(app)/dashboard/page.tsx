@@ -54,7 +54,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-2 space-y-8 md:p-6">
       {/* Header */}
       <DashboardHeader
         title="Dashboard"
