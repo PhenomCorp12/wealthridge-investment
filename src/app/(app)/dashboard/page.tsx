@@ -8,8 +8,7 @@ import RecentActivity from '@/components/dashboard/RecentActivity'
 import InvestmentDistribution from '@/components/dashboard/InvestmentDistribution'
 import QuickStats from '@/components/dashboard/QuickStats'
 import { useDashboard } from '@/components/providers/DashboardProvider'
-
-import TestTransaction from '@/components/dashboard/TestTransaction'
+import { Activity } from '@/types/dashboard' // Add this import
 
 export default function DashboardPage() {
   const { data, loading, error } = useDashboard()
@@ -100,8 +99,8 @@ export default function DashboardPage() {
             <div className="flex items-center text-sm">
               <Clock className="h-4 w-4 text-gray-400 mr-1" />
               <span className="text-gray-600">
-  {data.recentActivities.filter((a: Activity) => a.type === 'investment').length} active investments
-</span>
+                {data.recentActivities.filter((a: Activity) => a.type === 'investment').length} active investments
+              </span>
             </div>
           }
         />
@@ -132,12 +131,6 @@ export default function DashboardPage() {
 
       {/* Quick Stats */}
       <QuickStats stats={data.quickStats} />
-
-      
-
-<div className="mt-8">
-  <TestTransaction />
-</div>
     </div>
   )
 }
