@@ -9,7 +9,7 @@ import InvestmentDistribution from '@/components/dashboard/InvestmentDistributio
 import QuickStats from '@/components/dashboard/QuickStats'
 import { useDashboard } from '@/components/providers/DashboardProvider'
 import { Activity } from '@/types/dashboard'
-import TestTransaction from '@/components/dashboard/TestTransaction'
+//import TestTransaction from '@/components/dashboard/TestTransaction'
 
 export default function DashboardPage() {
   const { data, loading, error } = useDashboard()
@@ -133,9 +133,9 @@ export default function DashboardPage() {
       {/* Quick Stats */}
       <QuickStats stats={data.quickStats} />
 
-      <div className="mt-8">
+      {/*<div className="mt-8">
         <TestTransaction />
-      </div>
+      </div>*/}
     </div>
   )
 }
