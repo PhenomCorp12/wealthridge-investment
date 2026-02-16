@@ -58,7 +58,7 @@ export const useDashboardData = () => {
     try {
       setLoading(true)
       const supabase = createClient()
-      
+
       // Fetch user data
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -92,8 +92,8 @@ export const useDashboardData = () => {
         .filter((t: any) => t.type === 'profit')
         .reduce((sum: number, t: any) => sum + (t.amount || 0), 0)
 
-      const profitPercentage = activeInvestment > 0 
-        ? (profit / activeInvestment) * 100 
+      const profitPercentage = activeInvestment > 0
+        ? (profit / activeInvestment) * 100
         : 0
 
       // Format activities for display
@@ -152,11 +152,11 @@ export const useDashboardData = () => {
   }
 
   // Function to update after a transaction
-  const addTransaction = async (transaction: any): Promise<{ success: boolean; error?: any }> => {
+  const addTransaction = async (transaction: any): Promise<{ success: boolean; error?: string }> => {
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      
+
       if (!user) {
         return { success: false, error: 'No user found' }
       }
@@ -169,16 +169,30 @@ export const useDashboardData = () => {
           created_at: new Date().toISOString()
         })
 
-      if (error) throw error
-
+      if (error) {
+        console.error('Supabase error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
+        throw error
+      }
       // Refresh dashboard data
       await fetchDashboardData()
-      
+
       return { success: true }
     } catch (err) {
       console.error('Error adding transaction:', err)
-      return { success: false, error: err }
+      // Extract error message properly
+      const errorMessage = err instanceof Error
+        ? err.message
+        : typeof err === 'string'
+          ? err
+          : 'Unknown error occurred'
+      return { success: false, error: errorMessage }
     }
+
   }
 
   return {
